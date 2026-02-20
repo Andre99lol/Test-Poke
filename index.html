@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Poke Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1f87a9;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            max-width: 90%;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section-title {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1f87a9;
+            text-align: left;
+        }
+
+        .section-sottotitle {
+            display: block;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 1px;
+            color: #1f87a9;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #1ebe5d;
+        }
+        .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .checkbox-column {
+            min-width: 100px;
+            flex: 1 1 200px;
+        }
+        .checkbox-column label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+
+        .checkbox-column label:hover {
+            background: #d0e4e8;
+            gap: 10px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .radio-group label:hover {
+            background: #e8e8e8;
+            gap: 10px;
+        }
+        .order-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+        .order-details label {
+            flex: 1 1 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .order-details input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .order-details input:focus {
+            outline: none;
+            border-color: #1f87a9;
+        }
+        .extra-note {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        .price-tag {
+            color: #1f87a9;
+            font-weight: bold;
+            margin-left: 3px;
+        }
+        .info-box {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+        .call-button {
+            background: #1f87a9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+        .call-button:hover {
+            background: #166f8a;
+        }
+        .maps-button {
+            background: #bccdde;
+            color: white;
+            border: none;
+            width: 33.6px;           /* Larghezza fissa */
+            height: 33.6px;          /* Altezza fissa uguale alla larghezza = quadrato */
+            border-radius: 5px;    /* Leggermente arrotondato */
+            cursor: pointer;
+            font-size: 30px;       /* Dimensione icona */
+            display: inline-block;
+            align-items: center;
+            justify-content: center; /* Centra l'icona */
+            text-decoration: none;
+            margin-top: 0;
+            padding: 0;            /* Rimuovi padding */
+        }
+        .poke-card {
+            background: #e6f1f4;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 0 auto 25px auto;
+            width: 100%;
+            max-width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #1f87a9;
+            box-sizing: border-box;
+            transition: background 0.3s; /* Aggiunto per transizione fluida */
+        }
+
+        .poke-radio .poke-card:hover {
+            background: #b6d5ea !important; /* Oppure usa !important per test */
+            box-shadow: 0 8px 20px rgba(31,135,169,0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Per il grid delle poke già pronte */
+        [style*="display: grid"] .poke-card {
+            width: 100%;
+            margin: 0;
+            
+        }
+        .poke-name {
+            font-size: 1.2em;
+            font-weight: normal;
+            color: #1f87a9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .poke-ingredients {
+            color: #555;
+            font-size: 0.5em;
+            line-height: 1.4;
+        }
+        .poke-price {
+            font-weight: bold;
+            color: #25D366;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .poke-radio {
+            cursor: pointer;
+            display: block;
+        }
+
+        .poke-radio input[type="radio"] {
+            display: none;
+        }
+
+        .poke-radio .poke-card {
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 5px;
+            background: #e6f1f4;;
+        }
+
+        .poke-radio input[type="radio"]:checked + .poke-card {
+            border-color: #1f87a9;
+            box-shadow: 0 0 0 2px #1f87a9, 0 8px 12px rgba(31,135,169,0.2);
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+        }
+
+
+        .poke-ingredients {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .poke-ingredients strong {
+            color: #1f87a9;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1 resetRadioSelection()>Oceanopoke</h1>
+
+    <div class="box">
+        <h2 style="margin-top: 0; color: #1f87a9; text-align: center; margin-bottom: 25px;">
+                🍱 Crea la tua Bowl
+            </h2>
+        <!-- Dettagli ordine e tipo bowl -->
+        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+    <!-- Box Nome -->
+        <div class="order-details" style="flex: 1; display: flex;">
+                <label style="width: 100%; display: flex; flex-direction: column;">
+                    <span>👤 Il tuo nome</span>
+                    <input type="text" id="nome" placeholder="Come ti chiami?" style="width: 100%; box-sizing: border-box;">
+                </label>
+            </div>
+            
+            <!-- Box Localizzazione -->
+            <div class="order-details" style="flex: 1; display: flex;">
+                <label style="width: 100%; display: flex; flex-direction: column;">
+                    <span style="margin-bottom: 0;">📍 La tua posizione</span>
+                    <div style="display: flex; column-gap: 10px; align-items: center; width: 100%;">
+                        <button type="button" class="maps-button" onclick="getLocation()">
+                            🛰️ 
+                        </button>
+                        <input type="text" id="via" placeholder="Via e numero civico di consegna" style="display: flex; flex-direction: column; height: 33.6px; width: 100%; box-sizing: border-box;">
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="section">
+            <span class="section-sottotitle"> Scegli la Bowl di partenza</span>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="bowl" value="Regular"  price="12.90" checked> Regular 12,90€ 🍚
+                </label>
+                <label>
+                    <input type="radio" name="bowl" value="Large" price="14.90"> Large 14,90€ 🍱
+                </label>
+            </div>
+        </div>
+
+        <!-- poke da fare: Base -->
+        <div class="section">
+            <span class="section-title">🥣 Scegli la tua base</span>
+            <div class="radio-group">
+                <label><input type="radio" name="base" value="Riso bianco" > Riso bianco</label>
+                <label><input type="radio" name="base" value="Riso nero"> Riso nero</label>
+                <label><input type="radio" name="base" value="Insalata"> Insalata</label>
+                <label><input type="radio" name="base" value="Riso bianco e nero"> Riso bianco e nero</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <span>Salsa extra sulla base:</span>
+                    <input type="text" id="salsa" placeholder="es. salsa teriyaki" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                    <span class="price-tag">+0,30€</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Proteine -->
+        <div class="section">
+            <span class="section-title">🥩 Scegli le proteine (max 2)</span>
+            <div class="checkbox-grid">
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="proteine" value="Salmone crudo"> Salmone crudo</label>
+                    <label><input type="checkbox" name="proteine" value="Tonno crudo"> Tonno crudo</label>
+                    <label><input type="checkbox" name="proteine" value="Gamberoni al vapore"> Gamberoni al vapore</label>
+                    <label><input type="checkbox" name="proteine" value="Mozzarelline"> Mozzarelline</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="proteine" value="Salmone marinato" price="0.30"> Salmone marinato <span class="price-tag">+0,30€</span></label>
+                    <label><input type="checkbox" name="proteine" value="Tonno marinato" price="0.30"> Tonno marinato <span class="price-tag">+0,30€</span></label>
+                    <label><input type="checkbox" name="proteine" value="Tonno sott'olio"> Tonno sott'olio</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="proteine" value="Pollo grigliato"> Pollo grigliato</label>
+                    <label><input type="checkbox" name="proteine" value="Pollo teriyaki e Sesamo"> Pollo teriyaki e Sesamo</label>
+                    <label><input type="checkbox" name="proteine" value="Polpettine proteiche"> Polpettine proteiche</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="proteine" value="Tofu"> Tofu</label>
+                    <label><input type="checkbox" name="proteine" value="Feta"> Feta</label>
+                    <label><input type="checkbox" name="proteine" value="Uova sode"> Uova sode</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vegetali -->
+        <div class="section">
+            <span class="section-title">🥗 Vegetali a scelta (max 4)</span>
+            <div class="checkbox-grid">
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="vegetali" value="Zucchine"> Zucchine</label>
+                    <label><input type="checkbox" name="vegetali" value="Carote"> Carote</label>
+                    <label><input type="checkbox" name="vegetali" value="Pomodorini"> Pomodorini</label>
+                    <label><input type="checkbox" name="vegetali" value="Cappuccio"> Cappuccio</label>
+                    <label><input type="checkbox" name="vegetali" value="Fagioli"> Fagioli</label>
+                    <label><input type="checkbox" name="vegetali" value="Cetriolo"> Cetriolo</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="vegetali" value="Germogli di soia"> Germogli di soia</label>
+                    <label><input type="checkbox" name="vegetali" value="Olive nere"> Olive nere</label>
+                    <label><input type="checkbox" name="vegetali" value="Edamame"> Edamame</label>
+                    <label><input type="checkbox" name="vegetali" value="Cipolla in agrodolce"> Cipolla in agrodolce</label>
+                    <label><input type="checkbox" name="vegetali" value="Alghe Wakame" price="0.50"> Alghe Wakame <span class="price-tag">+0,50€</span></label>
+                    <label><input type="checkbox" name="vegetali" value="Zucchine grigliate"> Zucchine grigliate</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="vegetali" value="Ananas"> Ananas</label>
+                    <label><input type="checkbox" name="vegetali" value="Mango" price="0.50"> Mango <span class="price-tag">+0,50€</span></label>
+                    <label><input type="checkbox" name="vegetali" value="Zenzero"> Zenzero</label>
+                    <label><input type="checkbox" name="vegetali" value="Philadelphia" price="0.50"> Philadelphia <span class="price-tag">+0,50€</span></label>
+                    <label><input type="checkbox" name="vegetali" value="Jalapenos"> Jalapenos</label>
+                    <label><input type="checkbox" name="vegetali" value="Carciofi"> Carciofi</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="vegetali" value="Avocado" price="0.50"> Avocado <span class="price-tag">+0,50€</span></label>
+                    <label><input type="checkbox" name="vegetali" value="Mais"> Mais</label>
+                    <label><input type="checkbox" name="vegetali" value="Pomodori secchi"> Pomodori secchi</label>
+                    <label><input type="checkbox" name="vegetali" value="Ceci"> Ceci</label>
+                    <label><input type="checkbox" name="vegetali" value="Funghi trifolati"> Funghi trifolati</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salse -->
+        <div class="section">
+            <span class="section-title">🥫 Salse a scelta (max 2)</span>
+            <div class="checkbox-grid">
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="salse" value="Olio evo"> Olio evo</label>
+                    <label><input type="checkbox" name="salse" value="Olio sale e limone"> Olio sale e limone</label>
+                    <label><input type="checkbox" name="salse" value="Soia"> Soia</label>
+                    <label><input type="checkbox" name="salse" value="Ponzu"> Ponzu</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="salse" value="Mayo"> Mayo</label>
+                    <label><input type="checkbox" name="salse" value="Mayo pepe e limone"> Mayo pepe e limone</label>
+                    <label><input type="checkbox" name="salse" value="Mayo vegan"> Mayo vegan</label>
+                    <label><input type="checkbox" name="salse" value="Teriaki"> Teriaki</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="salse" value="Guacamole"> Guacamole</label>
+                    <label><input type="checkbox" name="salse" value="Yogurt"> Yogurt</label>
+                    <label><input type="checkbox" name="salse" value="Tzatziki"> Tzatziki</label>
+                    <label><input type="checkbox" name="salse" value="Burger"> Burger</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="salse" value="Agropiccante"> Agropiccante</label>
+                    <label><input type="checkbox" name="salse" value="Spicy Mayo"> Spicy Mayo</label>
+                    <label><input type="checkbox" name="salse" value="Sriracha"> Sriracha</label>
+                    <label><input type="checkbox" name="salse" value="Mango e Curry"> Mango e Curry</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crunchy -->
+        <div class="section">
+            <span class="section-title">✨ Topping crunchy</span>
+            <div class="checkbox-grid">
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="crunchy" value="Crispy onion"> Crispy onion</label>
+                    <label><input type="checkbox" name="crunchy" value="Mandorle a scaglie"> Mandorle a scaglie</label>
+                    <label><input type="checkbox" name="crunchy" value="Alghe nori"> Alghe nori</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="crunchy" value="Granella di pistacchi" price="0.30"> Granella di pistacchi <span class="price-tag">+0,30€</span></label>
+                    <label><input type="checkbox" name="crunchy" value="Arachidi"> Arachidi</label>
+                    <label><input type="checkbox" name="crunchy" value="Semi di sesamo"> Semi di sesamo</label>
+                </div>
+                <div class="checkbox-column">
+                    <label><input type="checkbox" name="crunchy" value="Chips di platano"> Chips di platano</label>
+                    <label><input type="checkbox" name="crunchy" value="Nachos"> Nachos</label>
+                    <label><input type="checkbox" name="crunchy" value="Taralli sbriciolati"> Taralli sbriciolati</label>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Poke gia pronte-->
+
+        <div class="section">
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="bowl" value="Menu Regular" price="14.50"> Menu Regular 14,50€ 🍱
+                </label>
+                <label>
+                    <input type="radio" name="bowl" value="Menu Large" price="16.50"> Menu Large 16,50€ 🍱
+                </label>
+            </div>
+            <span class="section-sottotitle">Il prezzo dei menù comprendono Pokè, Acqua e Caffè senza aggiunte</span>
+        </div>
+        
+        <!-- BOX POKE GIA' PRONTE (sotto le due box) -->
+        
+        <h2 style="margin-top: 0; color: #1f87a9; text-align: center; margin-bottom: 25px;">
+                🍱 Le nostre Poke già pronte
+            </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px;">
+                <!-- Poke 1 - Simple -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="simple" ingredienti="Riso Nero, Pomodorini, Carote, Olio Sale e Limone, Mandorle a scaglie">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>💪🏻</span> Simple
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso Nero<br>• Pomodorini<br>• Carote<br>• Olio Sale e Limone<br>• Mandorle a scaglie
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 2 - Things -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="things" ingredienti="Riso nero, Alghe wakame, Cipolle in agrodolce, Germogli di soia, Soia, Yogurt, Mandorle a scaglie">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🤙🏻</span> Things
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso nero<br>• Alghe wakame<br>• Cipolle in agrodolce<br>• Germogli di soia<br>• Soia<br>• Yogurt<br>• Mandorle a scaglie
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 3 - Always -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="always" ingredienti="Riso bianco, Pollo grigliato, Pomodorini, Edamame, Zucchine, Mayo pepe e limone, Semi di sesamo">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🐤</span> Always
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso bianco<br>• Pollo grigliato<br>• Pomodorini<br>• Edamame<br>• Zucchine<br>• Mayo pepe e limone<br>• Semi di sesamo
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 4 - Good -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="good" ingredienti="Riso bianco, Avocado, Philadelphia, Teriaki, crispy onion">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🍙</span> Good
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso bianco<br>• Avocado<br>• Philadelphia<br>• Teriaki<br>• crispy onion
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 5 - Vegan -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="vegan" ingredienti="Riso bianco e nero, Polpettine proteiche, Tofu, Germogli di Soia, Pomodorini, Carote, Mayo vegan, Mandorle scaglie">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🌾</span> Vegan
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso bianco e nero<br>• Polpettine proteiche<br>• Tofu<br>• Germogli di Soia<br>• Pomodorini<br>• Carote<br>• Mayo vegan<br>• Mandorle scaglie
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 6 - Italia -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="italia" ingredienti="Riso bianco e nero, Pollo, Uova sode, Cipolla in agrodolce, Pomodorini secchi, Zucchine, Mayo pepe e limone, arachidi">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🇮🇹</span> 100% Italia
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso bianco e nero<br>• Pollo<br>• Uova sode<br>• Cipolla in agrodolce<br>• Pomodorini secchi<br>• Zucchine<br>• Mayo pepe e limone<br>• arachidi
+                        </div>
+                    </div>
+                </label>
+                
+                <!-- Poke 7 - Baffo Tex-Mex -->
+                <label class="poke-radio">
+                    <input type="radio" name="poke-selected" value="baffo-tex-mex" ingredienti="Riso bianco e nero, Pollo teriyaki e sesamo, Fagioli, Jalapenos, Spicy Mayo, Arachidi">
+                    <div class="poke-card">
+                        <div class="poke-name">
+                            <span>🌶️</span> Baffo Tex-Mex
+                        </div>
+                        <div class="poke-ingredients">
+                            <strong>Ingredienti:</strong><br>• Riso bianco e nero<br>• Pollo teriyaki e sesamo<br>• Fagioli<br>• Jalapenos<br>• Spicy Mayo<br>• Arachidi
+                        </div>
+                    </div>
+                </label>
+            </div>
+        <button onclick="inviaWhatsApp()">📱 Invia ordine su WhatsApp</button>
+    </div>
+
+    <script>
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocalizzazione non supportata dal browser");
+        }
+    }   
+
+    let coordinate = null;
+
+    function showPosition(position) {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+        coordinate = `${lat},${lon}`;
+        
+        // Mostra le coordinate
+        //document.getElementById("coordinate").innerHTML = `📍 Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)}`;
+        
+        // Chiamata a OpenStreetMap Nominatim per ottenere l'indirizzo completo (GRATUITA)
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    let via = data.address.road || data.address.pedestrian || data.address.path || '';
+                    let civico = data.address.house_number || '';
+                    let cap = data.address.postcode || '';
+                    let citta = data.address.city || data.address.town || data.address.village || '';
+                    
+                    // Compila automaticamente il campo via
+                    if (via && civico) {
+                        document.getElementById("via").value = `${via} ${civico}, ${citta}`;
+                    } else if (via) {
+                        document.getElementById("via").value = `${via}, ${citta}`;
+                    }
+                    
+                    // Mostra il CAP (puoi usarlo come vuoi)
+                    if (cap) {
+                        console.log("CAP trovato:", cap);
+                        // Puoi aggiungere un campo nascosto o mostrarlo all'utente
+                        /*let capDisplay = document.getElementById("cap-display") || document.createElement('div');
+                        capDisplay.id = "cap-display";
+                        capDisplay.innerHTML = `📮 CAP: ${cap}`;
+                        capDisplay.style.margin = '5px 0';
+                        capDisplay.style.padding = '5px';
+                        capDisplay.style.background = '#e8f4f9';
+                        capDisplay.style.borderRadius = '4px';*/
+                        
+                        let coordinateDiv = document.getElementById("coordinate");
+                        coordinateDiv.parentNode.insertBefore(capDisplay, coordinateDiv.nextSibling);
+                    }
+                }
+            })
+            .catch(error => console.error("Errore nel reverse geocoding:", error));
+    }
+
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("Permesso negato. Per favore autorizza la geolocalizzazione.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Posizione non disponibile");
+                break;
+            case error.TIMEOUT:
+                alert("Timeout: richiesta troppo lunga");
+                break;
+            default:
+                alert("Errore sconosciuto");
+        }
+    }
+
+    function inviaWhatsApp() {
+        let nome = document.getElementById("nome").value.trim();
+        let via = document.getElementById("via").value.trim();
+        
+        if (!nome ) {
+            alert("Per favore, inserisci nome");
+            return;
+        }
+
+        let bowl = document.querySelector('input[name="bowl"]:checked');
+        let base = document.querySelector('input[name="base"]:checked');
+        let salsaExtra = document.getElementById("salsa").value.trim();
+        
+        // Raccogli tutti i checkbox selezionati
+        let ingredienti = [];
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+            ingredienti.push(cb.value);
+        });
+
+        // Costruisci il messaggio
+        let messaggio = "";
+
+        if(via) {
+            // Sostituisce tutti gli spazi con + per l'URL
+            let viaFormattata = encodeURIComponent(via.replace(/\s+/g, '+'));            
+            messaggio += "> *NUOVO ORDINE CONSEGNA* " + "\n";
+            messaggio += "https://www.google.com/maps/place/" + viaFormattata ;
+            if(coordinate!="") {
+                messaggio += "/?q=" + coordinate;
+            }
+            messaggio += "\n";
+            
+            // Opzionale: aggiungi anche l'indirizzo in formato leggibile
+            messaggio += " Indirizzo: " + via + "\n";
+        } else {
+            messaggio += "> *NUOVO ORDINE IN POKE* " + "\n";
+        }
+
+        messaggio += " Nome: " + nome + "\n";
+        messaggio += " Tipo bowl: " + bowl.value + "\n";
+
+        let pokeSel = document.querySelector('input[name="poke-selected"]:checked');
+
+        if(base){
+                messaggio += " Base: " + base.value + "\n";
+            
+            if (salsaExtra) {
+                messaggio += " Salsa Base: " + salsaExtra + "\n";
+            }
+            
+            // Seleziona tutti i checkbox checked
+            const checkboxesSelezionati = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            // Crea un array di ingredienti
+            const ingredienti = Array.from(checkboxesSelezionati).map(cb => ({
+                name: cb.name,
+                value: cb.value,
+                label: cb.parentElement.textContent.trim() // Il testo visibile
+            }));
+
+            // Ora puoi usare il tuo codice
+            if (ingredienti.length > 0) {
+                messaggio += "> *INGREDIENTI SELEZIONATI:* \n";
+                
+                const proteine = ingredienti.filter(ing => ing.name === "proteine");
+                const vegetali = ingredienti.filter(ing => ing.name === "vegetali");
+                const salse = ingredienti.filter(ing => ing.name === "salse");
+                const crunchy = ingredienti.filter(ing => ing.name === "crunchy");
+                
+                if (proteine.length > 0) {
+                    messaggio += "Proteine:\n";
+                    proteine.forEach(ing => {
+                        messaggio += "• " + ing.value + "\n";
+                    });
+                }
+                
+                if (vegetali.length > 0) {
+                    messaggio += "Vegetali:\n";
+                    vegetali.forEach(ing => {
+                        messaggio += "• " + ing.value + "\n";
+                    });
+                }
+                
+                if (salse.length > 0) {
+                    messaggio += "Salse:\n";
+                    salse.forEach(ing => {
+                        messaggio += "• " + ing.value + "\n";
+                    });
+                }
+                
+                if (crunchy.length > 0) {
+                    messaggio += "Crunchy:\n";
+                    crunchy.forEach(ing => {
+                        messaggio += "• " + ing.value + "\n";
+                    });
+                }
+            }
+        } else if(pokeSel){
+            messaggio += " Poke selezionata: " + pokeSel.value + "\n";
+            messaggio += " Ingredienti: " + pokeSel.getAttribute("ingredienti") + "\n";
+        }
+
+        
+
+        let numeroPoke = "+393332686185"; // Il tuo numero WhatsApp
+        
+        let url = "https://wa.me/" + numeroPoke + "?text=" + encodeURIComponent(messaggio);
+        window.open(url, "_blank");
+    }
+    </script>
+</body>
+</html>
